@@ -38,7 +38,7 @@ public class GamePane extends BorderPane  {
         //actionPane.getChildren().add(p)
         KeyListener keyListener = new KeyListener();
         this.setOnKeyPressed(keyListener);
-        this.setOnKeyTyped(keyListener);
+        //this.setOnKeyTyped(keyListener);
         //gameTimer.start();
     }
     
@@ -52,9 +52,6 @@ public class GamePane extends BorderPane  {
     public class KeyListener implements EventHandler<KeyEvent> {
         @Override
         public void handle(KeyEvent e) {
-            
-        
-        
         KeyCode keyCode = e.getCode();
         switch(keyCode) { 
             case LEFT:
@@ -66,13 +63,40 @@ public class GamePane extends BorderPane  {
                 getCmdCenter().Move();
                 break;
             case SPACE:
+                pause();
                 gameTimer.start();
+                p = new Projectile();
+                cmdCenter.setProjectile(p);
+                actionPane.getChildren().add(cmdCenter.getProjectile());
+                cmdCenter.getProjectile().setX(cmdCenter.getX() + 11);
+                cmdCenter.getProjectile().setY(cmdCenter.getY() + 0);
                 getCmdCenter().fireProjectile();
+                //if (cmdCenter.getProjectile())
+                //play();
                 break;
         }
         
         }
     }
+    
+    public class KeyPaused implements EventHandler<KeyEvent> {
+        @Override
+        public void handle(KeyEvent e) {
+            KeyCode k = e.getCode();
+            switch (k) {
+                case LEFT:
+                    getCmdCenter().setDirection(180);
+                    getCmdCenter().Move();
+                    break;
+                case RIGHT:
+                    getCmdCenter().setDirection(0);
+                    getCmdCenter().Move();
+                    break;
+            }
+            
+        }
+    }
+    
     
     public class GameTimer extends AnimationTimer {
 
@@ -83,10 +107,27 @@ public class GamePane extends BorderPane  {
             } else if (now - previous >= 500000L) {
                 cmdCenter.fireProjectile();
                 previous = now;
+                //reset();
+                if (cmdCenter.getProjectile().getY() < -12) {
+                    //cmdCenter.getProjectile().setX(cmdCenter.getX() + 11);
+                    //cmdCenter.getProjectile().setY(cmdCenter.getY() + 10);
+                    this.stop();
+                    play();
+                }
             }
         }
         
         
+    }
+    
+    public void pause() {
+        KeyPaused kp = new KeyPaused();
+        this.setOnKeyPressed(kp);
+    }
+    
+    public void play() {
+        KeyListener kp = new KeyListener();
+        this.setOnKeyPressed(kp);
     }
 
     /**

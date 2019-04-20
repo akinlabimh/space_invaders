@@ -26,7 +26,7 @@ public class MajorProgram3 extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-        ActionPane ap = new ActionPane();
+        //ActionPane ap = new ActionPane();
         
         
         

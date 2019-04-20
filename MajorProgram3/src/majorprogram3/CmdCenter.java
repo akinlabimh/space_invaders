@@ -14,7 +14,7 @@ import javafx.scene.image.Image;
  * @author akin
  */
 public class CmdCenter extends GameObject {
-    private Projectile projectile;
+    private Projectile projectile = new Projectile();
     private ActionPane a;
     
     public CmdCenter(ActionPane actionPane) {
@@ -59,8 +59,15 @@ public class CmdCenter extends GameObject {
         //System.out.println(getX());
         double newX = this.getX() + getSpeed() * Math.cos(Math.toRadians(getDirection()));
        // double newY = this.getY() + getSpeed() * Math.sin(Math.toRadians(getDirection())) ;
-        this.setX( newX );
-        //ystem.out.println(getX());
+       if (newX >= 516.5) {
+           this.setX(516.50);
+       } else if (newX <= 12.5) {
+           this.setX(12.5);
+       } else {
+       
+       this.setX( newX );
+       }
+       //System.out.println(getX());
        // this.setY( newY );
     }
 
@@ -79,8 +86,9 @@ public class CmdCenter extends GameObject {
     }
     
     public void fireProjectile() {
-        projectile = new Projectile();
-        projectile.setDirection(90);
+        
+        projectile.setSpeed(3);
+        projectile.setDirection(270);
         projectile.Move();
     }
 }
