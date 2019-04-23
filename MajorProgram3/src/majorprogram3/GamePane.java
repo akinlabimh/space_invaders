@@ -9,6 +9,7 @@ package majorprogram3;
 //import java.awt.event.ActionListener;
 //import java.awt.event.KeyEvent;
 //import java.awt.event.KeyListener;
+import java.util.Random;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
@@ -32,12 +33,19 @@ public class GamePane extends BorderPane  {
         actionPane = new ActionPane();
         this.setCenter(actionPane);
         cmdCenter = new CmdCenter(getActionPane());
+        spaceShip = new SpaceShip();
         //cmdCenter.setProjectile(p);
         actionPane.getChildren().add(cmdCenter);
+        actionPane.getChildren().add(spaceShip);
+        p = new Projectile();
+        cmdCenter.setProjectile(p);
+        p.setVisible(false);
+        //spaceShip.setVisible(true);
         //actionPane.getChildren().add(p);
         //actionPane.getChildren().add(p)
         KeyListener keyListener = new KeyListener();
         this.setOnKeyPressed(keyListener);
+        gameTimer.start();
         //this.setOnKeyTyped(keyListener);
         //gameTimer.start();
     }
@@ -64,9 +72,7 @@ public class GamePane extends BorderPane  {
                 break;
             case SPACE:
                 pause();
-                gameTimer.start();
-                p = new Projectile();
-                cmdCenter.setProjectile(p);
+                p.setVisible(true);
                 actionPane.getChildren().add(cmdCenter.getProjectile());
                 cmdCenter.getProjectile().setX(cmdCenter.getX() + 11);
                 cmdCenter.getProjectile().setY(cmdCenter.getY() + 0);
@@ -100,34 +106,99 @@ public class GamePane extends BorderPane  {
     
     public class GameTimer extends AnimationTimer {
 
+        private boolean wait = false;
+        private long spawnTime;
+        Random lol = new Random();
         private long previous = 0;
+        private long previouss = 0;
         public void handle(long now) {
-            if (previous == 0) {
-                previous = now;
-            } else if (now - previous >= 500000L) {
+            if (now - previous >= 500000L) {
                 cmdCenter.fireProjectile();
                 previous = now;
-                //reset();
-                if (cmdCenter.getProjectile().getY() < -12) {
-                    //cmdCenter.getProjectile().setX(cmdCenter.getX() + 11);
-                    //cmdCenter.getProjectile().setY(cmdCenter.getY() + 10);
-                    this.stop();
+                if (cmdCenter.getProjectile().getY() < -15) {
                     play();
                 }
+                
             }
+            if (previouss == 0) {
+                previouss = now;
+            }
+            if (now - previouss >= 25000000L && spaceShip.isVisible()) {
+                spaceShip.Move();
+                if (spaceShip.hitbox(cmdCenter.getProjectile()) == true) {
+                    spaceShip.setVisible(false);
+                    cmdCenter.getProjectile().setVisible(false);
+                }
+                //spaceShip.Move();
+                //spaceShip.Move();
+                previous = now;
+            } 
+            if(!wait) {
+                long rand = lol.nextInt(20);
+                if (rand < 6) {
+                    rand = 5;
+                }
+                //System.out.println(rand);
+                spawnTime = (long) (now + (rand + 5) * Math.pow(10,9));
+                wait = true;
+            }
+            if (wait && now >= spawnTime) {
+                int directionChooser = lol.nextInt(2);
+                spaceShip.setVisible(true);
+                //int direction;
+                
+                switch (directionChooser) {
+                    case 1:
+                        spaceShip.setDirection(180);
+                        spaceShip.setX(spaceShip.getParentWidth() + 530);
+                        spaceShip.setY(spaceShip.getParentHeight() - 25);
+                        //System.out.println(180);
+                        //spaceShip.setX(550);
+                        //pause();
+                        break;
+                    default:
+                        spaceShip.setDirection(0);
+                        spaceShip.setX(spaceShip.getParentWidth() - 120);
+                        spaceShip.setY(spaceShip.getParentHeight() - 25);
+                        //System.out.println(0);
+                        //spaceShip.setX(0);
+                        break;
+                }
+                
+                wait = false;
+            }
+               
         }
         
         
     }
     
+    public void freezeThenStop() {
+        double t = 0;
+        for (int i = 1; i < 1000; i++) {
+            t++;
+            System.out.println(t);
+            if (t == 999) {
+                actionPane.getChildren().remove(spaceShip);
+            }
+        }
+    }
+    
     public void pause() {
         KeyPaused kp = new KeyPaused();
         this.setOnKeyPressed(kp);
+        
     }
     
     public void play() {
         KeyListener kp = new KeyListener();
         this.setOnKeyPressed(kp);
+    }
+    
+    public int scramble() {
+        Random r = new Random();
+        int i = r.nextInt(5);
+        return i;
     }
 
     /**
@@ -198,6 +269,10 @@ public class GamePane extends BorderPane  {
      */
     public void setGameTimer(GameTimer gameTimer) {
         this.gameTimer = gameTimer;
+    }
+    
+    public void spawnShip() {
+        
     }
 
 }

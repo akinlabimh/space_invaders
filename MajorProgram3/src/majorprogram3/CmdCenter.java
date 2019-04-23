@@ -51,7 +51,7 @@ public class CmdCenter extends GameObject {
         this.setX(getParentWidth() /2 + 261);
         this.setY(getParentHeight() + 576);
         
-        this.setSpeed(8);
+        this.setSpeed(10);
     }
 
     @Override
@@ -89,6 +89,14 @@ public class CmdCenter extends GameObject {
         
         projectile.setSpeed(3);
         projectile.setDirection(270);
-        projectile.Move();
+        if (this.getProjectile().getY() >= -15) {
+            projectile.Move();
+        } else {
+            Projectile lol = new Projectile();
+            this.setProjectile(lol);
+            
+        }
+        
+        
     }
 }

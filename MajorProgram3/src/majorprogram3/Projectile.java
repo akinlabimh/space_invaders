@@ -46,7 +46,7 @@ public class Projectile extends GameObject {
         //this.setX(getParentWidth() /2 + 261);
         //this.setY(getParentHeight() + 576);
         
-        this.setSpeed(8);
+        this.setSpeed(50);
     }
     
     @Override
