@@ -65,7 +65,7 @@ public class CmdCenter extends GameObject {
            this.setX(12.5);
        } else {
        
-       this.setX( newX );
+       this.setX(newX);
        }
        //System.out.println(getX());
        // this.setY( newY );
@@ -86,15 +86,18 @@ public class CmdCenter extends GameObject {
     }
     
     public void fireProjectile() {
+
         
-        projectile.setSpeed(3);
+        projectile.setSpeed(8);
         projectile.setDirection(270);
         if (this.getProjectile().getY() >= -15) {
             projectile.Move();
         } else {
             Projectile lol = new Projectile();
             this.setProjectile(lol);
-            
+            lol.setX(this.getX()+11);
+            lol.setY(this.getY());
+            lol.setVisible(true);
         }
         
         

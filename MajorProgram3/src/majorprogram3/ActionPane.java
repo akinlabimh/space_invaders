@@ -18,6 +18,7 @@ public class ActionPane extends Pane {
     TheHord h;
     
     public ActionPane() {
+        
         this.setWidth(550);
         this.setHeight(600);
 //        CmdCenter c = new CmdCenter(this);

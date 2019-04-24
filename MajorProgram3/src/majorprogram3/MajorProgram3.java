@@ -35,7 +35,7 @@ public class MajorProgram3 extends Application {
         g.setStyle("-fx-background-color: #000000;");
         
         
-        Scene s = new Scene(g, 550, 600);
+        Scene s = new Scene(g, 550, 630);
         
         //s.setOnKeyPressed(new EventHandler<KeyEvent>());
         

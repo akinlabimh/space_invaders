@@ -11,10 +11,14 @@ package majorprogram3;
 //import java.awt.event.KeyListener;
 import java.util.Random;
 import javafx.animation.AnimationTimer;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 
 /**
  *
@@ -27,9 +31,14 @@ public class GamePane extends BorderPane  {
     private TheHord theHord;
     private GameTimer gameTimer = new GameTimer();
     private Projectile p;
+    public StatusPane s;
+    private ControlPane ControlPane;
+    private Label score;
+    public GamePane th = this;
+    
     
     public GamePane() {
-        p = new Projectile();
+        //p = new Projectile();
         actionPane = new ActionPane();
         this.setCenter(actionPane);
         cmdCenter = new CmdCenter(getActionPane());
@@ -37,9 +46,17 @@ public class GamePane extends BorderPane  {
         //cmdCenter.setProjectile(p);
         actionPane.getChildren().add(cmdCenter);
         actionPane.getChildren().add(spaceShip);
+        cmdCenter.setVisible(false);
+        spaceShip.setVisible(false);
         p = new Projectile();
         cmdCenter.setProjectile(p);
-        p.setVisible(false);
+        //cmdCenter.getProjectile().setVisible(false);
+        s = new StatusPane();
+        this.getChildren().add(s);
+        GamePane th = this;
+//        score.setStyle("-fx-background-color: #000000;");
+//        this.setTop(score);
+//        ControlPane.addAll(start, restart, exit);
         //spaceShip.setVisible(true);
         //actionPane.getChildren().add(p);
         //actionPane.getChildren().add(p)
@@ -48,6 +65,10 @@ public class GamePane extends BorderPane  {
         gameTimer.start();
         //this.setOnKeyTyped(keyListener);
         //gameTimer.start();
+        ControlPane = new ControlPane(this);
+        this.setBottom(ControlPane);
+        
+        
     }
     
 //    public GamePane(ActionPane actionPane) {
@@ -72,7 +93,7 @@ public class GamePane extends BorderPane  {
                 break;
             case SPACE:
                 pause();
-                p.setVisible(true);
+                cmdCenter.getProjectile().setVisible(true);
                 actionPane.getChildren().add(cmdCenter.getProjectile());
                 cmdCenter.getProjectile().setX(cmdCenter.getX() + 11);
                 cmdCenter.getProjectile().setY(cmdCenter.getY() + 0);
@@ -116,6 +137,7 @@ public class GamePane extends BorderPane  {
                 cmdCenter.fireProjectile();
                 previous = now;
                 if (cmdCenter.getProjectile().getY() < -15) {
+                    cmdCenter.getProjectile().setVisible(false);
                     play();
                 }
                 
@@ -125,30 +147,47 @@ public class GamePane extends BorderPane  {
             }
             if (now - previouss >= 25000000L && spaceShip.isVisible()) {
                 spaceShip.Move();
-                if (spaceShip.hitbox(cmdCenter.getProjectile()) == true) {
+//////////                if (spaceShip.hitbox(cmdCenter.getProjectile()) == true) {
+////////////                    System.out.println(spaceShip.getX());
+////////////                    System.out.println("hit");
+//////////                    s.setPoints(spaceShip.setRandomPointValue());
+//////////                    s.displayPoints();
+//////////                    spaceShip.setVisible(false);
+//////////                    cmdCenter.getProjectile().setVisible(false);
+//////////                }
+                //spaceShip.Move();
+                //spaceShip.Move();
+                GameUtility g = new GameUtility();
+                boolean hit = g.detectCollision(cmdCenter.getProjectile(), spaceShip);
+                
+                if (hit) {
+                    
+                    s.setPoints(spaceShip.setRandomPointValue());
+                    s.displayPoints();
                     spaceShip.setVisible(false);
                     cmdCenter.getProjectile().setVisible(false);
                 }
-                //spaceShip.Move();
-                //spaceShip.Move();
+                
                 previous = now;
             } 
             if(!wait) {
-                long rand = lol.nextInt(20);
+                //Change back to 20
+                long rand = lol.nextInt(2);
                 if (rand < 6) {
                     rand = 5;
                 }
                 //System.out.println(rand);
-                spawnTime = (long) (now + (rand + 5) * Math.pow(10,9));
+                spawnTime = (long) (now + (rand + 10) * Math.pow(10,9));
                 wait = true;
             }
             if (wait && now >= spawnTime) {
                 int directionChooser = lol.nextInt(2);
-                spaceShip.setVisible(true);
+                //spaceShip.setVisible(true);
                 //int direction;
                 
                 switch (directionChooser) {
                     case 1:
+                        spaceShip.setVisible(true);
                         spaceShip.setDirection(180);
                         spaceShip.setX(spaceShip.getParentWidth() + 530);
                         spaceShip.setY(spaceShip.getParentHeight() - 25);
@@ -157,6 +196,7 @@ public class GamePane extends BorderPane  {
                         //pause();
                         break;
                     default:
+                        spaceShip.setVisible(true);
                         spaceShip.setDirection(0);
                         spaceShip.setX(spaceShip.getParentWidth() - 120);
                         spaceShip.setY(spaceShip.getParentHeight() - 25);
@@ -167,7 +207,11 @@ public class GamePane extends BorderPane  {
                 
                 wait = false;
             }
-               
+//            if (spaceShip.getBoundsInParent().intersects(cmdCenter.getProjectile().getBoundsInParent())) {
+//                spaceShip.setVisible(false);
+//                cmdCenter.getProjectile().setVisible(false);
+//                wait = false;
+//            }  
         }
         
         

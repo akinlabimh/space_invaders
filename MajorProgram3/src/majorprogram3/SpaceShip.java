@@ -56,16 +56,19 @@ public class SpaceShip extends GameObject {
         boolean lol = false;
         double ex = p.getX();
         double why = p.getY();
-        if (ex >= this.getX() + 70 && ex <= this.getX() + 150) {
-            if (why >= this.getY() && why <= this.getY() + 75) {
-                lol = true;
+        if (ex >= this.getX() && ex <= this.getX() + 150) {
+            if (why > this.getY() && why < this.getY() + 75) {
+               System.out.println(this.getY());
+               System.out.println(why);
+               System.out.println(this.getY()+75);
+               lol = true; 
             } else {
-                lol = false;
+               lol = false;
             }
         } else {
             lol = false;
         }
-        System.out.println("");
+        //System.out.println("");
         //ex = 0;
         //why = 0;
         return lol;
@@ -75,24 +78,7 @@ public class SpaceShip extends GameObject {
         Random r = new Random();
         int i = r.nextInt(3);
         i++;
-        i*=100;
-//        if (i == 100) {
-//            this.setImage(getOne());
-//            this.setX(this.getX()+15);
-//            this.setScaleX(1);
-//            this.setScaleY(1);
-//        } else if (i == 200) {
-//            this.setImage(getTwo());
-//            this.setX(this.getX()+15);
-//            this.setScaleX(1);
-//            this.setScaleY(1);
-//        } else {
-//            this.setImage(getThree());
-//            this.setX(this.getX()+15);
-//            this.setScaleX(1);
-//            this.setScaleY(1);
-//        }
-        
+        i*=100;       
         
         return i;
     }
