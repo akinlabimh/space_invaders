@@ -13,12 +13,14 @@ import java.util.Random;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.FlowPane;
 
 /**
  *
@@ -35,9 +37,11 @@ public class GamePane extends BorderPane  {
     private ControlPane ControlPane;
     private Label score;
     public GamePane th = this;
+    private int scoree;
     
     
     public GamePane() {
+        scoree = 0;
         //p = new Projectile();
         actionPane = new ActionPane();
         this.setCenter(actionPane);
@@ -46,29 +50,72 @@ public class GamePane extends BorderPane  {
         //cmdCenter.setProjectile(p);
         actionPane.getChildren().add(cmdCenter);
         actionPane.getChildren().add(spaceShip);
-        cmdCenter.setVisible(false);
-        spaceShip.setVisible(false);
+        cmdCenter.setVisible(true);
+        spaceShip.setVisible(true);
         p = new Projectile();
         cmdCenter.setProjectile(p);
-        //cmdCenter.getProjectile().setVisible(false);
+        cmdCenter.getProjectile().setVisible(true);
         s = new StatusPane();
         this.getChildren().add(s);
-        GamePane th = this;
-//        score.setStyle("-fx-background-color: #000000;");
+        Label prefix = new Label("Score: ");
+        score = new Label("0");
+        
+        
+        FlowPane tp = new FlowPane();
+        tp.getChildren().add(prefix);
+        tp.getChildren().add(score);
+        tp.setStyle("-fx-background-color: #FFFFFF;");
 //        this.setTop(score);
 //        ControlPane.addAll(start, restart, exit);
         //spaceShip.setVisible(true);
         //actionPane.getChildren().add(p);
         //actionPane.getChildren().add(p)
-        KeyListener keyListener = new KeyListener();
-        this.setOnKeyPressed(keyListener);
-        gameTimer.start();
+        
         //this.setOnKeyTyped(keyListener);
         //gameTimer.start();
         ControlPane = new ControlPane(this);
-        this.setBottom(ControlPane);
+        //this.setBottom(ControlPane);
+        FlowPane y = new FlowPane();
+        Button start = new Button("START");
+        Button restart = new Button("RESTART");
+        Button exit = new Button("EXIT");
         
+        start.setPrefSize(80, 10);
+        restart.setPrefSize(80, 10);
+        exit.setPrefSize(80, 10);
         
+        y.getChildren().addAll(start, restart, exit);
+        y.setAlignment(Pos.CENTER);
+        
+        start.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override 
+            public void handle(MouseEvent e) {
+                KeyListener keyListener = new KeyListener();
+                th.setOnKeyPressed(keyListener);
+                gameTimer.start();
+            }
+        });
+        
+        restart.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override 
+            public void handle(MouseEvent e) {
+                gameTimer.stop();
+                gameTimer.start();
+            }
+        });
+        
+        exit.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override 
+            public void handle(MouseEvent e) {
+                System.exit(-1);
+            }
+        });
+        
+//        KeyListener keyListener = new KeyListener();
+//        th.setOnKeyPressed(keyListener);
+//        gameTimer.start();
+        this.setBottom(y);
+        this.setTop(tp);
     }
     
 //    public GamePane(ActionPane actionPane) {
@@ -83,15 +130,15 @@ public class GamePane extends BorderPane  {
         public void handle(KeyEvent e) {
         KeyCode keyCode = e.getCode();
         switch(keyCode) { 
-            case LEFT:
+            case A:
                 getCmdCenter().setDirection(180);
                 getCmdCenter().Move();
                 break;
-            case RIGHT:
+            case D:
                 getCmdCenter().setDirection(0);
                 getCmdCenter().Move();
                 break;
-            case SPACE:
+            case S:
                 pause();
                 cmdCenter.getProjectile().setVisible(true);
                 actionPane.getChildren().add(cmdCenter.getProjectile());
@@ -161,9 +208,9 @@ public class GamePane extends BorderPane  {
                 boolean hit = g.detectCollision(cmdCenter.getProjectile(), spaceShip);
                 
                 if (hit) {
-                    
-                    s.setPoints(spaceShip.setRandomPointValue());
-                    s.displayPoints();
+//                    s.setPoints(spaceShip.setRandomPointValue());
+//                    s.displayPoints();
+                    updateScore();
                     spaceShip.setVisible(false);
                     cmdCenter.getProjectile().setVisible(false);
                 }
@@ -215,6 +262,13 @@ public class GamePane extends BorderPane  {
         }
         
         
+    }
+    
+    public void updateScore() {
+        int prev = Integer.parseInt(score.getText());
+        int next = prev + spaceShip.setRandomPointValue();
+        score.setText(next + "");
+        System.out.println(next);
     }
     
     public void freezeThenStop() {

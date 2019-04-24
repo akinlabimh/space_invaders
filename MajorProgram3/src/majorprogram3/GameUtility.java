@@ -19,7 +19,7 @@ public class GameUtility {
     public static boolean detectCollision(Projectile p, GameObject g) {
          Bounds b = g.getBoundsInParent();
          if ((checkBounds(p.getY(), b.getMinY(), b.getMaxY())) 
-                 && checkBounds(p.getX() + 1, b.getMinX(), b.getMaxX())) {
+                 && (checkBounds(p.getX() + 1, b.getMinX(), b.getMaxX()))) {
              return true;
          } else {
              return false;

@@ -50,6 +50,8 @@ public class SpaceShip extends GameObject {
     public void Move() {
         double newX = this.getX() + getSpeed() * Math.cos(Math.toRadians(getDirection()));
         this.setX( newX );
+        //this.setY(-25);
+        System.out.println(this.getY());
     }
     
     public boolean hitbox(Projectile p) {
