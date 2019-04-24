@@ -13,7 +13,7 @@ import javafx.scene.image.Image;
  *
  * @author akin
  */
-public class SpaceShip extends GameObject {
+public class SpaceShip extends Invader {
     private Image one;
     private Image two;
     private Image three;
@@ -36,22 +36,27 @@ public class SpaceShip extends GameObject {
 
         this.setScaleX(0.5);
         this.setScaleY(0.5);
+        //this.setStyle("-fx-background-color: #000000;");
         
         //this.setDirection(180);
         
-        //this.setX(530);
-        //this.setY(25);
+        this.setX(-10);
+        this.setY(-25);
         
         this.setSpeed(1);
         this.setVisible(false);
+        
+        //System.out.println(getX());
+        //System.out.println(getY());
     }
 
     @Override
     public void Move() {
+        
         double newX = this.getX() + getSpeed() * Math.cos(Math.toRadians(getDirection()));
         this.setX( newX );
         //this.setY(-25);
-        System.out.println(this.getY());
+        //System.out.println(this.getY());
     }
     
     public boolean hitbox(Projectile p) {

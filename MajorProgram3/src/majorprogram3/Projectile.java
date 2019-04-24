@@ -46,19 +46,16 @@ public class Projectile extends GameObject {
         //this.setX(getParentWidth() /2 + 261);
         //this.setY(getParentHeight() + 576);
         
-        this.setSpeed(50);
+        //this.setSpeed(50);
     }
     
     @Override
     public void Move() {
-        
         //double newX = this.getX() + getSpeed() * Math.cos(Math.toRadians(getDirection()));
         double newY = this.getY() + getSpeed() * Math.sin(Math.toRadians(getDirection())) ;
         //this.setX( newX );
         //ystem.out.println(getX());
         this.setY( newY );
         //System.out.println(getY());
-        
-        
     }
 }

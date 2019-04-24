@@ -47,6 +47,8 @@ public class GamePane extends BorderPane  {
         this.setCenter(actionPane);
         cmdCenter = new CmdCenter(getActionPane());
         spaceShip = new SpaceShip();
+        spaceShip.setX(-10);
+        spaceShip.setY(-25);
         //cmdCenter.setProjectile(p);
         actionPane.getChildren().add(cmdCenter);
         actionPane.getChildren().add(spaceShip);
@@ -54,12 +56,15 @@ public class GamePane extends BorderPane  {
         spaceShip.setVisible(true);
         p = new Projectile();
         cmdCenter.setProjectile(p);
-        cmdCenter.getProjectile().setVisible(true);
+        cmdCenter.getProjectile().setVisible(false);
+        actionPane.getChildren().add(cmdCenter.getProjectile());
         s = new StatusPane();
         this.getChildren().add(s);
         Label prefix = new Label("Score: ");
         score = new Label("0");
-        
+        theHord = new TheHord();
+        theHord.initTheHord(actionPane);
+        //theHord.setVisible(true);
         
         FlowPane tp = new FlowPane();
         tp.getChildren().add(prefix);
@@ -100,7 +105,10 @@ public class GamePane extends BorderPane  {
             @Override 
             public void handle(MouseEvent e) {
                 gameTimer.stop();
-                gameTimer.start();
+                cmdCenter.setX(cmdCenter.getParentWidth() /2 + 261);
+                cmdCenter.setY(cmdCenter.getParentHeight() + 576);
+                score.setText("0");
+                //gameTimer.start();
             }
         });
         
@@ -139,12 +147,16 @@ public class GamePane extends BorderPane  {
                 getCmdCenter().Move();
                 break;
             case S:
-                pause();
+                //pause();
+                if (!cmdCenter.getProjectile().isVisible()) {
+                    
+                
                 cmdCenter.getProjectile().setVisible(true);
-                actionPane.getChildren().add(cmdCenter.getProjectile());
+
                 cmdCenter.getProjectile().setX(cmdCenter.getX() + 11);
                 cmdCenter.getProjectile().setY(cmdCenter.getY() + 0);
                 getCmdCenter().fireProjectile();
+                }
                 //if (cmdCenter.getProjectile())
                 //play();
                 break;
@@ -178,21 +190,23 @@ public class GamePane extends BorderPane  {
         private long spawnTime;
         Random lol = new Random();
         private long previous = 0;
-        private long previouss = 0;
+        private long previousShip = 0;
+        private long perviousAlien = 0;
         public void handle(long now) {
-            if (now - previous >= 500000L) {
-                cmdCenter.fireProjectile();
+            if (now - previous >= 500000L && cmdCenter.getProjectile().isVisible()) {
+                //lowercase move
+                cmdCenter.getProjectile().Move();
                 previous = now;
                 if (cmdCenter.getProjectile().getY() < -15) {
                     cmdCenter.getProjectile().setVisible(false);
-                    play();
+                    //play();
                 }
                 
             }
-            if (previouss == 0) {
-                previouss = now;
+            if (previousShip == 0) {
+                previousShip = now;
             }
-            if (now - previouss >= 25000000L && spaceShip.isVisible()) {
+            if (now - previousShip >= 25000000L && spaceShip.isVisible()) {
                 spaceShip.Move();
 //////////                if (spaceShip.hitbox(cmdCenter.getProjectile()) == true) {
 ////////////                    System.out.println(spaceShip.getX());
@@ -205,18 +219,79 @@ public class GamePane extends BorderPane  {
                 //spaceShip.Move();
                 //spaceShip.Move();
                 GameUtility g = new GameUtility();
-                boolean hit = g.detectCollision(cmdCenter.getProjectile(), spaceShip);
-                
-                if (hit) {
+                boolean hit = false;
+                if (cmdCenter.getProjectile().isVisible() && spaceShip.isVisible()) {
+                    hit = g.detectCollision(cmdCenter.getProjectile(), spaceShip);
+                }
+                if (hit && (cmdCenter.getProjectile().isVisible())) {
 //                    s.setPoints(spaceShip.setRandomPointValue());
 //                    s.displayPoints();
                     updateScore();
                     spaceShip.setVisible(false);
                     cmdCenter.getProjectile().setVisible(false);
                 }
-                
                 previous = now;
             } 
+            
+            
+                for (int i = 0; i < 5; i++) {
+                        for (int j = 0; j < 11; j++) {
+                            if(now - perviousAlien >= 25000000L && theHord.getAlien(i, j).isVisible())  {
+                                theHord.getAlien(i, j).setSpeed(0.5);
+                                //theHord.getAlien(i, j).setDirection(0);
+                                theHord.getAlien(i, j).Move();
+                                
+                                if (theHord.getAlien(i, j).getX() >= 600 && theHord.getAlien(i, j).isVisible()) {
+                                    for (int h = 0; h < 5; h++) {
+                                        for (int k = 0; k < 11; k++) {
+                                            theHord.getAlien(h, k).setDirection(180);
+                                            //System.out.println("ttt");
+                                        }
+                                    }
+                                }
+                                
+                                if (theHord.getAlien(i, j).getX() <= 0 && theHord.getAlien(i, j).isVisible()) {
+                                    for (int h = 0; h < 5; h++) {
+                                        for (int k = 0; k < 11; k++) {
+                                            theHord.getAlien(h, k).setDirection(0);
+                                            //System.out.println("ttt");
+                                        }
+                                    }
+                                }
+                                
+                                if (theHord.getAlien(i, j).getX() <= 0) {
+                                    theHord.changeDirection();
+                                }
+                                
+                                System.out.println(theHord.getAlien(i, j).getX());
+                                boolean hits = false;
+                                GameUtility go = new GameUtility();
+                                if (cmdCenter.getProjectile().isVisible() && theHord.getAlien(i, j).isVisible()) {
+                                    hits = go.detectCollision(cmdCenter.getProjectile(), theHord.getAlien(i, j));
+                                } else if (cmdCenter.getProjectile().isVisible() && spaceShip.isVisible()) {
+                                    cmdCenter.getProjectile().setSpeed(8);
+                                    cmdCenter.getProjectile().Move();
+
+                                }
+
+                                if (hits && (cmdCenter.getProjectile().isVisible())) {
+                                updateScore();
+                                //System.out.println("hahahah");
+                                theHord.getAlien(i, j).setVisible(false);
+                                cmdCenter.getProjectile().setVisible(false);
+                                //System.out.println(cmdCenter.getProjectile().getSpeed());
+                                }
+                                
+                            }
+                        }
+                }
+            
+            if (perviousAlien == 0) {
+                perviousAlien = now;
+            }
+            
+                
+            
             if(!wait) {
                 //Change back to 20
                 long rand = lol.nextInt(2);
@@ -268,7 +343,7 @@ public class GamePane extends BorderPane  {
         int prev = Integer.parseInt(score.getText());
         int next = prev + spaceShip.setRandomPointValue();
         score.setText(next + "");
-        System.out.println(next);
+        //System.out.println(next);
     }
     
     public void freezeThenStop() {

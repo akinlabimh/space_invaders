@@ -87,18 +87,21 @@ public class CmdCenter extends GameObject {
     
     public void fireProjectile() {
 
-        
-        projectile.setSpeed(8);
+        // add code to position projectile
+        getProjectile().setX(getX() + 11);
+        getProjectile().setY(getY() + 0);
+        getProjectile().setSpeed(8);
         projectile.setDirection(270);
-        if (this.getProjectile().getY() >= -15) {
-            projectile.Move();
-        } else {
-            Projectile lol = new Projectile();
-            this.setProjectile(lol);
-            lol.setX(this.getX()+11);
-            lol.setY(this.getY());
-            lol.setVisible(true);
-        }
+//        if (this.getProjectile().getY() >= -15) {
+//            projectile.Move();
+//        }
+//        } else {
+//            Projectile lol = new Projectile();
+//            this.setProjectile(lol);
+//            lol.setX(this.getX()+11);
+//            lol.setY(this.getY());
+//            lol.setVisible(true);
+//        }
         
         
     }
