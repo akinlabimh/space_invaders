@@ -42,6 +42,7 @@ public class GamePane extends BorderPane  {
     private Label score;
     public GamePane th = this;
     private int scoree;
+    GMO gameover;
     
     
     public GamePane() {
@@ -68,7 +69,9 @@ public class GamePane extends BorderPane  {
         score = new Label("0");
         theHord = new TheHord();
         theHord.initTheHord(actionPane);
-
+        gameover = new GMO(actionPane);
+        gameover.setVisible(false);
+        actionPane.getChildren().add(gameover);
         //theHord.setVisible(true);
         
         FlowPane tp = new FlowPane();
@@ -109,7 +112,7 @@ public class GamePane extends BorderPane  {
         restart.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override 
             public void handle(MouseEvent e) {
-                gameTimer.stop();
+                //gameTimer.stop();
                 cmdCenter.setX(cmdCenter.getParentWidth() /2 + 261);
                 cmdCenter.setY(cmdCenter.getParentHeight() + 576);
                 
@@ -123,6 +126,8 @@ public class GamePane extends BorderPane  {
                 theHord = new TheHord();
                 theHord.initTheHord(actionPane);
                 score.setText("0");
+                gameover.setVisible(false);
+                //gameTimer.start();
                 //gameTimer.start();
             }
         });
@@ -489,8 +494,6 @@ public class GamePane extends BorderPane  {
     
     public void gameOver() {
         gameTimer.stop();
-        GMO gameover = new GMO(actionPane);
-        actionPane.getChildren().add(gameover);
         gameover.setVisible(true);
     }
 
