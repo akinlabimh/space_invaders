@@ -42,7 +42,7 @@ public class Alien extends Invader {
 //            System.err.println(ex.getMessage());
 //            System.exit(-1);
 //        }
-       
+        
         this.setScaleX(2);
         this.setScaleY(2);
         this.setSpeed(1);

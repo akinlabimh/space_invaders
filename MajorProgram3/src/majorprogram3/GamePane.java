@@ -9,12 +9,16 @@ package majorprogram3;
 //import java.awt.event.ActionListener;
 //import java.awt.event.KeyEvent;
 //import java.awt.event.KeyListener;
+import java.util.Optional;
 import java.util.Random;
 import javafx.animation.AnimationTimer;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -64,6 +68,7 @@ public class GamePane extends BorderPane  {
         score = new Label("0");
         theHord = new TheHord();
         theHord.initTheHord(actionPane);
+
         //theHord.setVisible(true);
         
         FlowPane tp = new FlowPane();
@@ -107,6 +112,16 @@ public class GamePane extends BorderPane  {
                 gameTimer.stop();
                 cmdCenter.setX(cmdCenter.getParentWidth() /2 + 261);
                 cmdCenter.setY(cmdCenter.getParentHeight() + 576);
+                
+                for (int i = 0; i < 5; i++) {
+                    for (int j = 0; j < 11; j++) {
+                        theHord.getAlien(i, j).setVisible(false);
+                    }
+                }
+                spaceShip.setVisible(false);
+                cmdCenter.getProjectile().setVisible(false);
+                theHord = new TheHord();
+                theHord.initTheHord(actionPane);
                 score.setText("0");
                 //gameTimer.start();
             }
@@ -237,22 +252,28 @@ public class GamePane extends BorderPane  {
                 for (int i = 0; i < 5; i++) {
                         for (int j = 0; j < 11; j++) {
                             if(now - perviousAlien >= 25000000L && theHord.getAlien(i, j).isVisible())  {
-                                theHord.getAlien(i, j).setSpeed(0.5);
+                                //theHord.getAlien(i, j).setSpeed(1);
                                 //theHord.getAlien(i, j).setDirection(0);
                                 theHord.getAlien(i, j).Move();
                                 
-                                if (theHord.getAlien(i, j).getX() >= 600 && theHord.getAlien(i, j).isVisible()) {
+                                if (theHord.getAlien(i, j).getX() >= 526 && theHord.getAlien(i, j).isVisible()) {
                                     for (int h = 0; h < 5; h++) {
                                         for (int k = 0; k < 11; k++) {
+                                            theHord.getAlien(h, k).setY(theHord.getAlien(h, k).getY() + 10);
+                                            if (theHord.getAlien(h, k).getY() >= cmdCenter.getY() && theHord.getAlien(h, k).isVisible()) {
+                                                gameOver();
+                                            }
                                             theHord.getAlien(h, k).setDirection(180);
+                                            
                                             //System.out.println("ttt");
                                         }
                                     }
                                 }
                                 
-                                if (theHord.getAlien(i, j).getX() <= 0 && theHord.getAlien(i, j).isVisible()) {
+                                if (theHord.getAlien(i, j).getX() <= 5 && theHord.getAlien(i, j).isVisible()) {
                                     for (int h = 0; h < 5; h++) {
                                         for (int k = 0; k < 11; k++) {
+                                            theHord.getAlien(h, k).setY(theHord.getAlien(h, k).getY() + 10);
                                             theHord.getAlien(h, k).setDirection(0);
                                             //System.out.println("ttt");
                                         }
@@ -263,7 +284,7 @@ public class GamePane extends BorderPane  {
                                     theHord.changeDirection();
                                 }
                                 
-                                System.out.println(theHord.getAlien(i, j).getX());
+                                //System.out.println(theHord.getAlien(i, j).getX());
                                 boolean hits = false;
                                 GameUtility go = new GameUtility();
                                 if (cmdCenter.getProjectile().isVisible() && theHord.getAlien(i, j).isVisible()) {
@@ -275,10 +296,21 @@ public class GamePane extends BorderPane  {
                                 }
 
                                 if (hits && (cmdCenter.getProjectile().isVisible())) {
-                                updateScore();
-                                //System.out.println("hahahah");
-                                theHord.getAlien(i, j).setVisible(false);
-                                cmdCenter.getProjectile().setVisible(false);
+                                    int type = theHord.getAlien(i, j).getAlienType();
+                                    updateScore(type);
+                                    //System.out.println("hahahah");
+                                    theHord.getAlien(i, j).setVisible(false);
+                                    cmdCenter.getProjectile().setVisible(false);
+                                    theHord.setNumAliens(theHord.getNumAliens() - 1);
+                                    //System.out.println(theHord.getNumAliens());
+                                    if (theHord.getNumAliens() % 4 == 0) {
+                                        for (int h = 0; h < 5; h++) {
+                                            for (int k = 0; k < 11; k++) {
+                                                theHord.getAlien(h, k).setSpeed(theHord.getAlien(h, k).getSpeed() + 0.2);
+                                                //System.out.println(theHord.getAlien(h, k).getSpeed());
+                                            }
+                                        }
+                                    }
                                 //System.out.println(cmdCenter.getProjectile().getSpeed());
                                 }
                                 
@@ -294,7 +326,7 @@ public class GamePane extends BorderPane  {
             
             if(!wait) {
                 //Change back to 20
-                long rand = lol.nextInt(2);
+                long rand = lol.nextInt(20);
                 if (rand < 6) {
                     rand = 5;
                 }
@@ -342,6 +374,13 @@ public class GamePane extends BorderPane  {
     public void updateScore() {
         int prev = Integer.parseInt(score.getText());
         int next = prev + spaceShip.setRandomPointValue();
+        score.setText(next + "");
+        //System.out.println(next);
+    }
+    
+    public void updateScore(int i) {
+        int prev = Integer.parseInt(score.getText());
+        int next = prev + (i * 100);
         score.setText(next + "");
         //System.out.println(next);
     }
@@ -446,6 +485,13 @@ public class GamePane extends BorderPane  {
     
     public void spawnShip() {
         
+    }
+    
+    public void gameOver() {
+        gameTimer.stop();
+        GMO gameover = new GMO(actionPane);
+        actionPane.getChildren().add(gameover);
+        gameover.setVisible(true);
     }
 
 }

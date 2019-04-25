@@ -27,6 +27,7 @@ public class TheHord {
     Image sprite;
     Image sprite2;        
     Image sprite3;
+    private int numAliens = 0;
     
     public TheHord() {
         aliens = new Alien[5][11];
@@ -44,12 +45,13 @@ public class TheHord {
 //        this.setVgap(10);
 //        this.setPadding(new Insets(80, 10, 10, 10));
         double yCoord = 90;
-        double tRow = 63;
+        
         
         
 
         
         for (int i = 0; i < 1; i++) {
+            double tRow = 63;
             for (int j = 0; j < aliens[i].length; j++) {
                 Alien a = new Alien(actionPane, sprite3 , 3);
                 aliens[i][j] = a;
@@ -58,6 +60,7 @@ public class TheHord {
                 a.setX(tRow);
                 a.setY(yCoord);
                 tRow += 40;
+                numAliens++;
                 //yCoord +=10;
                 //this.add(a, j, i);
             }
@@ -73,6 +76,7 @@ public class TheHord {
                 a.setX(mRow);
                 a.setY(yCoord);
                 mRow += 40;
+                numAliens++;
                 //yCoord +=10;
                 //this.add(a, j, i+2);
             }
@@ -89,6 +93,7 @@ public class TheHord {
                 a.setX(bRow);
                 a.setY(yCoord);
                 bRow += 40;
+                numAliens++;
                 //yCoord +=10;
                 //this.add(a, j, i+4);
                 GameUtility g = new GameUtility();
@@ -166,5 +171,19 @@ public class TheHord {
 
     public Alien getAlien(int i, int j) {
         return aliens[i][j];
+    }
+
+    /**
+     * @return the numAliens
+     */
+    public int getNumAliens() {
+        return numAliens;
+    }
+
+    /**
+     * @param numAliens the numAliens to set
+     */
+    public void setNumAliens(int numAliens) {
+        this.numAliens = numAliens;
     }
 }

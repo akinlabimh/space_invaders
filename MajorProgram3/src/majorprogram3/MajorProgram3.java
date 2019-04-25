@@ -39,7 +39,7 @@ public class MajorProgram3 extends Application {
         
         //s.setOnKeyPressed(new EventHandler<KeyEvent>());
         
-        primaryStage.setTitle("lol");
+        primaryStage.setTitle("Space Invaders Remake by Akinlabi Mason-Hogans");
         primaryStage.setScene(s);
         primaryStage.show();
         
